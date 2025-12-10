@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improving AI Assistance for Non-Technical Learners | IBM Design Thinking</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --ibm-blue: #0f62fe;
+            --ibm-blue-dark: #0043ce;
+            --ibm-blue-light: #4589ff;
+            --ibm-purple: #8a3ffc;
+            --ibm-cyan: #00d4ff;
+            --text-primary: #161616;
+            --text-secondary: #525252;
+            --bg-gray: #f4f4f4;
+            --bg-white: #ffffff;
+            --border-gray: #e0e0e0;
+        }
+
+        body {
+            font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--bg-gray);
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--ibm-blue) 0%, var(--ibm-blue-dark) 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .header .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.8s ease 0.2s both;
+        }
+
+        .header-tags {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeIn 1s ease 0.4s both;
+        }
+
+        .tag {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            background: white;
+            padding: 1rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            overflow-x: auto;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .nav-tab:hover {
+            background: var(--bg-gray);
+            color: var(--ibm-blue);
+        }
+
+        .nav-tab.active {
+            background: var(--ibm-blue);
+            color: white;
+        }
+
+        .section {
+            background: white;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--ibm-blue);
+        }
+
+        .section-icon {
+            background: var(--ibm-blue);
+            color: white;
+            padding: 0.75rem;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .section h2 {
+            font-size: 1.8rem;
+            color: var(--ibm-blue);
+            font-weight: 600;
+        }
+
+        .section h3 {
+            font-size: 1.3rem;
+            color: var(--text-primary);
+            margin: 1.5rem 0 1rem;
+            font-weight: 600;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #e8f4ff 0%, #f0f7ff 100%);
+            border-left: 4px solid var(--ibm-blue);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+        }
+
+        .problem-list {
+            display: grid;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .problem-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--bg-gray);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .problem-item:hover {
+            background: #e8f4ff;
+            transform: translateX(5px);
+        }
+
+        .problem-number {
+            background: var(--ibm-blue);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .framework-steps {
+            display: grid;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .step-card {
+            background: white;
+            border: 2px solid var(--border-gray);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .step-card:hover {
+            border-color: var(--ibm-blue);
+            box-shadow: 0 4px 12px rgba(15,98,254,0.15);
+            transform: translateY(-2px);
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .step-number {
+            background: linear-gradient(135deg, var(--ibm-blue) 0%, var(--ibm-purple) 100%);
+            color: white;
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .step-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .code-example {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            margin: 1rem 0;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, var(--ibm-blue) 0%, var(--ibm-blue-dark) 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .metric-card:hover {
+            transform: scale(1.05);
+        }
+
+        .metric-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0.5rem 0;
+        }
+
+        .metric-change {
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .accordion {
+            border: 1px solid var(--border-gray);
+            border-radius: 8px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+
+        .accordion-header {
+            background: var(--bg-gray);
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s ease;
+        }
+
+        .accordion-header:hover {
+            background: #e8f4ff;
+        }
+
+        .accordion-content {
+            padding: 0 1.5rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .accordion.active .accordion-content {
+            padding: 1.5rem;
+            max-height: 1000px;
+        }
+
+        .accordion.active .accordion-icon {
+            transform: rotate(180deg);
+        }
+
+        .accordion-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .persona-card {
+            background: linear-gradient(135deg, #f0f7ff 0%, #e8f4ff 100%);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 1.5rem 0;
+        }
+
+        .persona-traits {
+            display: grid;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .trait {
+            display: flex;
+            align-items: start;
+            gap: 1rem;
+        }
+
+        .trait-icon {
+            background: var(--ibm-blue);
+            color: white;
+            padding: 0.5rem;
+            border-radius: 8px;
+            flex-shrink: 0;
+        }
+
+        .cta-section {
+            background: linear-gradient(135deg, var(--ibm-blue) 0%, var(--ibm-purple) 100%);
+            color: white;
+            padding: 3rem 2rem;
+            border-radius: 12px;
+            text-align: center;
+            margin: 3rem 0;
+        }
+
+        .cta-section h2 {
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: white;
+            color: var(--ibm-blue);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            color: var(--ibm-blue);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            .container {
+                padding: 1rem;
+            }
+            .section {
+                padding: 1.5rem;
+            }
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>Improving AI Assistance for Non-Technical Learners</h1>
+        <p class="subtitle">Using IBM Design Thinking to Transform Learning Workflows</p>
+        <div class="header-tags">
+            <span class="tag">
+                <i data-lucide="lightbulb"></i>
+                IBM Design Thinking
+            </span>
+            <span class="tag">
+                <i data-lucide="brain"></i>
+                AI Workflow Optimization
+            </span>
+            <span class="tag">
+                <i data-lucide="users"></i>
+                User-Centered Design
+            </span>
+            <span class="tag">
+                <i data-lucide="trending-up"></i>
+                Process Improvement
+            </span>
+        </div>
+    </header>
+
+    <div class="container">
+        <nav class="nav-tabs">
+            <button class="nav-tab active" onclick="scrollToSection('summary', event)">Executive Summary</button>
+            <button class="nav-tab" onclick="scrollToSection('problem', event)">Problem Analysis</button>
+            <button class="nav-tab" onclick="scrollToSection('framework', event)">SAPF Framework</button>
+            <button class="nav-tab" onclick="scrollToSection('impact', event)">Impact & Results</button>
+            <button class="nav-tab" onclick="scrollToSection('conclusion', event)">Business Value</button>
+        </nav>
+
+        <section id="summary" class="section">
+            <div class="section-header">
+                <div class="section-icon">
+                    <i data-lucide="file-text"></i>
+                </div>
+                <h2>Executive Summary</h2>
+            </div>
+            
+            <p style="font-size: 1.05rem; line-height: 1.8;">在國泰的資訊人才培訓班（Java, Java Script, SQL）期間，我每天都使用 AI 工具來理解程式碼、找錯誤、釐清邏輯。然而，我常遇到 AI 回答太表面、沒抓到重點、需要反覆詢問多次才能得到真正有幫助的資訊。</p>
+
+            <p style="font-size: 1.05rem; line-height: 1.8; margin-top: 1rem;">為了改善這個問題，我用 <strong style="color: var(--ibm-blue);">IBM Design Thinking</strong> 的方式重新分析整個「學生 × AI 工具」的使用流程，找出關鍵痛點，並設計出更有效率的使用方式。</p>
+
+            <h3 style="margin-top: 2rem;">解決方案：Eugenie 的結構化 AI 使用框架（SAPF）</h3>
+            <p style="margin-top: 1rem;">包含以下核心元素：</p>
+            <ul style="margin-left: 2rem; margin-top: 1rem; line-height: 1.8;">
+                <li>設定 AI 為明確角色（例如資深後端工程師）</li>
+                <li>用「背景 → 假設 → 程式碼 → 要求」的方式清楚描述問題</li>
+                <li>明確要求 AI 按步驟回答</li>
+                <li>按情境選擇不同 AI 工具（Claude、ChatGPT、Perplexity）</li>
+            </ul>
+
+            <h3 style="margin-top: 2rem;">成果數據</h3>
+            <p style="margin-top: 1rem;">一個小型測試顯示：</p>
+
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-label">反覆詢問次數</div>
+                    <div class="metric-value">6 → 3</div>
+                    <div class="metric-change">
+                        <i data-lucide="arrow-down"></i>
+                        降低 50%
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">任務處理時間</div>
+                    <div class="metric-value">25 → 14 分鐘</div>
+                    <div class="metric-change">
+                        <i data-lucide="arrow-down"></i>
+                        縮短 44%
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">信任度評分</div>
+                    <div class="metric-value">2.4 → 4.0</div>
+                    <div class="metric-change">
+                        <i data-lucide="arrow-up"></i>
+                        提升 67%
+                    </div>
+                </div>
+            </div>
+
+            <div class="highlight-box" style="margin-top: 2rem;">
+                <p style="font-size: 1.05rem; line-height: 1.8;"><strong>這份專案不只是在教「怎麼用 AI」</strong>，而是展示我如何把一個模糊的學習困難變成可分析、可拆解、可測試、可改善的流程設計。</p>
+                <p style="margin-top: 1rem; font-size: 1.05rem; line-height: 1.8;">這種能力完全符合 <strong style="color: var(--ibm-blue);">IBM Associate Business Consultant</strong> 所需要的問題分析力、洞察力與流程優化能力。</p>
+            </div>
+        </section>
+
+        <section id="problem" class="section">
+            <div class="section-header">
+                <div class="section-icon">
+                    <i data-lucide="alert-circle"></i>
+                </div>
+                <h2>Problem Statement & Analysis</h2>
+            </div>
+
+            <h3>Background & Personal Context</h3>
+            <p>During backend training, I was constantly switching between Java, SQL, and Vue.js—areas completely new to me. While AI tools accelerated my learning, I noticed patterns in where the interactions failed:</p>
+
+            <div class="problem-list">
+                <div class="problem-item">
+                    <div class="problem-number">1</div>
+                    <div>
+                        <strong>Unclear Task Definition</strong><br>
+                        Students don't know how much context AI needs. "Please explain this code" rarely leads to helpful answers.
+                    </div>
+                </div>
+                <div class="problem-item">
+                    <div class="problem-number">2</div>
+                    <div>
+                        <strong>Surface-Level Explanations</strong><br>
+                        AI describes what the code does, but not how it works or why it matters.
+                    </div>
+                </div>
+                <div class="problem-item">
+                    <div class="problem-number">3</div>
+                    <div>
+                        <strong>Low Trust in AI Responses</strong><br>
+                        Most learners verify results through Google, documentation, or classmates.
+                    </div>
+                </div>
+                <div class="problem-item">
+                    <div class="problem-number">4</div>
+                    <div>
+                        <strong>Random Tool Usage</strong><br>
+                        Switching between ChatGPT, Claude, and Perplexity without clear strategy.
+                    </div>
+                </div>
+                <div class="problem-item">
+                    <div class="problem-number">5</div>
+                    <div>
+                        <strong>High Iteration Cost</strong><br>
+                        Often takes 5–7 rounds to reach a truly useful explanation.
+                    </div>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <strong>Key Insight:</strong> The challenge wasn't AI's capability—it was how we guided AI to understand our intent.
+            </div>
+
+            <h3>Target Persona</h3>
+            <div class="persona-card">
+                <div style="display: flex; align-items: start; gap: 2rem; flex-wrap: wrap;">
+                    <div style="flex-shrink: 0;">
+                        <div style="width: 120px; height: 120px; background: linear-gradient(135deg, var(--ibm-blue) 0%, var(--ibm-purple) 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(15,98,254,0.3);">
+                            <i data-lucide="user" style="width: 60px; height: 60px; color: white;"></i>
+                        </div>
+                        <div style="text-align: center; margin-top: 0.5rem; font-weight: 600; color: var(--ibm-blue);">Eugenie</div>
+                    </div>
+                    <div style="flex: 1; min-width: 300px;">
+                        <h4 style="color: var(--ibm-blue); margin-bottom: 1rem; font-size: 1.3rem;">Business Major Transitioning into Technical Learning</h4>
+                        <div class="persona-traits">
+                            <div class="trait">
+                                <div class="trait-icon">
+                                    <i data-lucide="graduation-cap"></i>
+                                </div>
+                                <div>New to backend engineering with limited technical background</div>
+                            </div>
+                            <div class="trait">
+                                <div class="trait-icon">
+                                    <i data-lucide="message-circle"></i>
+                                </div>
+                                <div>Frequently uses AI but without a consistent workflow</div>
+                            </div>
+                            <div class="trait">
+                                <div class="trait-icon">
+                                    <i data-lucide="list"></i>
+                                </div>
+                                <div>Prefers clear, structured explanations over technical jargon</div>
+                            </div>
+                            <div class="trait">
+                                <div class="trait-icon">
+                                    <i data-lucide="help-circle"></i>
+                                </div>
+                                <div>Unsure how to judge if AI responses are correct</div>
+                            </div>
+                            <div class="trait">
+                                <div class="trait-icon">
+                                    <i data-lucide="repeat"></i>
+                                </div>
+                                <div>Needs a repeatable method to ask more effective questions</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Key Insights from IBM Design Thinking Process</h3>
+            <div class="accordion">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <strong>Insight 1: Structure leads to clearer answers</strong>
+                    <i class="accordion-icon" data-lucide="chevron-down"></i>
+                </div>
+                <div class="accordion-content">
+                    Adding goals, hypotheses, and required output format dramatically improved response quality.
+                </div>
+            </div>
+            <div class="accordion">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <strong>Insight 2: Students struggle with defining the task</strong>
+                    <i class="accordion-icon" data-lucide="chevron-down"></i>
+                </div>
+                <div class="accordion-content">
+                    Most weren't sure how much background or context was necessary for effective prompts.
+                </div>
+            </div>
+            <div class="accordion">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <strong>Insight 3: Broad prompts lead to broad answers</strong>
+                    <i class="accordion-icon" data-lucide="chevron-down"></i>
+                </div>
+                <div class="accordion-content">
+                    AI answers depend entirely on how the question is framed. Specificity drives relevance.
+                </div>
+            </div>
+            <div class="accordion">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <strong>Insight 4: Role assignment improves alignment</strong>
+                    <i class="accordion-icon" data-lucide="chevron-down"></i>
+                </div>
+                <div class="accordion-content">
+                    "You are a backend engineer reviewing this Java method" generated more practical responses.
+                </div>
+            </div>
+            <div class="accordion">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <strong>Insight 5: Different tools excel at different tasks</strong>
+                    <i class="accordion-icon" data-lucide="chevron-down"></i>
+                </div>
+                <div class="accordion-content">
+                    Claude → logic understanding | ChatGPT → iterative debugging | Perplexity → fact checking
+                </div>
+            </div>
+        </section>
+
+        <section id="framework" class="section">
+            <div class="section-header">
+                <div class="section-icon">
+                    <i data-lucide="layers"></i>
+                </div>
+                <h2>Eugenie's Structured AI Prompting Framework (SAPF)</h2>
+            </div>
+
+            <p>A practical, repeatable workflow derived from real trial and error during my backend training.</p>
+
+            <div class="framework-steps">
+                <div class="step-card">
+                    <div class="step-header">
+                        <div class="step-number">1</div>
+                        <div class="step-title">Role Assignment</div>
+                    </div>
+                    <p>Setting a role helps AI understand the perspective and context:</p>
+                    <div class="code-example">"You are a backend engineer. Please review this code with me."</div>
+                    <p style="margin-top: 1rem;">✅ Responses immediately became more aligned with technical expectations</p>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-header">
+                        <div class="step-number">2</div>
+                        <div class="step-title">Context Sandwich Structure</div>
+                    </div>
+                    <p>My go-to prompt template:</p>
+                    <div class="code-example">You are a backend engineer.
+
+(1) My goal is: [understand login validation logic]
+(2) My current assumption is: [this checks username format]
+
+---
+[paste code here]
+---
+
+Please answer in this order:
+1. Execution flow
+2. Whether my assumption is correct
+3. Potential risks
+4. Suggestions for improvement</div>
+                    <p style="margin-top: 1rem;">This gives AI: clear direction, relevant context, and required output format.</p>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-header">
+                        <div class="step-number">3</div>
+                        <div class="step-title">Step-by-Step Reasoning</div>
+                    </div>
+                    <p>Request structured responses to avoid long, unstructured paragraphs:</p>
+                    <ul style="margin-left: 2rem; margin-top: 1rem;">
+                        <li>Break down complex logic into digestible steps</li>
+                        <li>Number each point for easy reference</li>
+                        <li>Include "why" explanations, not just "what"</li>
+                    </ul>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-header">
+                        <div class="step-number">4</div>
+                        <div class="step-title">Strategic Tool Selection</div>
+                    </div>
+                    <p>Choose the right AI tool for the task:</p>
+                    <div style="display: grid; gap: 1rem; margin-top: 1rem;">
+                        <div style="padding: 1rem; background: #f0f7ff; border-radius: 8px;">
+                            <strong style="color: var(--ibm-blue);">Claude</strong> → Best for understanding logic and breaking down complex flows
+                        </div>
+                        <div style="padding: 1rem; background: #f0f7ff; border-radius: 8px;">
+                            <strong style="color: var(--ibm-blue);">ChatGPT</strong> → Best for iterative debugging and code refinement
+                        </div>
+                        <div style="padding: 1rem; background: #f0f7ff; border-radius: 8px;">
+                            <strong style="color: var(--ibm-blue);">Perplexity</strong> → Best for factual verification and documentation lookup
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="impact" class="section">
+            <div class="section-header">
+                <div class="section-icon">
+                    <i data-lucide="bar-chart-3"></i>
+                </div>
+                <h2>Impact & Validation</h2>
+            </div>
+
+            <p>A small-scale trial with 12 users (fellow trainees with similar backgrounds) showed significant improvements:</p>
+
+            <div style="overflow-x: auto; margin: 2rem 0;">
+                <table style="width: 100%; border-collapse: collapse; background: white;">
+                    <thead>
+                        <tr style="background: var(--ibm-blue); color: white;">
+                            <th style="padding: 1rem; text-align: left;">Metric</th>
+                            <th style="padding: 1rem; text-align: center;">Before</th>
+                            <th style="padding: 1rem; text-align: center;">After</th>
+                            <th style="padding: 1rem; text-align: center;">Improvement</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid var(--border-gray);">
+                            <td style="padding: 1rem;"><strong>Prompt iterations</strong></td>
+                            <td style="padding: 1rem; text-align: center;">6</td>
+                            <td style="padding: 1rem; text-align: center;">3</td>
+                            <td style="padding: 1rem; text-align: center; color: var(--ibm-blue); font-weight: 600;">-50%</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--border-gray);">
+                            <td style="padding: 1rem;"><strong>Time per task</strong></td>
+                            <td style="padding: 1rem; text-align: center;">25 min</td>
+                            <td style="padding: 1rem; text-align: center;">14 min</td>
+                            <td style="padding: 1rem; text-align: center; color: var(--ibm-blue); font-weight: 600;">-44%</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 1rem;"><strong>Trust score (1-5)</strong></td>
+                            <td style="padding: 1rem; text-align: center;">2.4</td>
+                            <td style="padding: 1rem; text-align: center;">4.0</td>
+                            <td style="padding: 1rem; text-align: center; color: var(--ibm-blue); font-weight: 600;">+67%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="highlight-box">
+                <strong>User Feedback:</strong> "Answers are much easier to understand" | "Finally aligned with what I needed" | "I know exactly what to ask now"
+            </div>
+
+            <h3>Real Case Study: Login Validation Method</h3>
+            <p>During training, I encountered a login validation method that I couldn't fully understand. Here's how SAPF transformed the interaction:</p>
+
+            <div style="display: grid; gap: 1.5rem; margin: 2rem 0;">
+                <div style="padding: 1.5rem; background: #fff3f3; border-left: 4px solid #da1e28; border-radius: 8px;">
+                    <strong style="color: #da1e28;">❌ Before SAPF (7 iterations)</strong>
+                    <p style="margin-top: 0.5rem;">Initial AI explanation was long but unhelpful—lacked execution flow, missed a potential null-check issue, no clear structure.</p>
+                </div>
+                <div style="padding: 1.5rem; background: #e8f4ff; border-left: 4px solid var(--ibm-blue); border-radius: 8px;">
+                    <strong style="color: var(--ibm-blue);">✅ After SAPF (2 iterations)</strong>
+                    <ul style="margin-top: 0.5rem; margin-left: 1.5rem;">
+                        <li>Structured explanation with clear execution flow</li>
+                        <li>Logic broken down step-by-step</li>
+                        <li>Identified potential null-check risk</li>
+                        <li>Provided two refactoring options</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="conclusion" class="section">
+            <div class="section-header">
+                <div class="section-icon">
+                    <i data-lucide="target"></i>
+                </div>
+                <h2>Business Value & Applications</h2>
+            </div>
+
+            <h3>Skills Demonstrated</h3>
+            <div class="persona-traits">
+                <div class="trait">
+                    <div class="trait-icon">
+                        <i data-lucide="search"></i>
+                    </div>
+                    <div><strong>Problem Analysis:</strong> Breaking down ambiguous challenges into structured frameworks</div>
+                </div>
+                <div class="trait">
+                    <div class="trait-icon">
+                        <i data-lucide="lightbulb"></i>
+                    </div>
+                    <div><strong>Design Thinking:</strong> Applying IBM methodology to real-world workflow issues</div>
+                </div>
+                <div class="trait">
+                    <div class="trait-icon">
+                        <i data-lucide="git-branch"></i>
+                    </div>
+                    <div><strong>Process Optimization:</strong> Designing practical, repeatable solutions</div>
+                </div>
+                <div class="trait">
+                    <div class="trait-icon">
+                        <i data-lucide="users"></i>
+                    </div>
+                    <div><strong>User-Centered Approach:</strong> Understanding pain points through empathy and research</div>
+                </div>
+                <div class="trait">
+                    <div class="trait-icon">
+                        <i data-lucide="check-circle"></i>
+                    </div>
+                    <div><strong>Data-Driven Validation:</strong> Testing solutions and measuring impact</div>
+                </div>
+                <div class="trait">
+                    <div class="trait-icon">
+                        <i data-lucide="bridge"></i>
+                    </div>
+                    <div><strong>Technical-Business Bridge:</strong> Translating technical workflows into business value</div>
+                </div>
+            </div>
+
+            <h3>Potential Applications</h3>
+            <div style="display: grid; gap: 1rem; margin: 2rem 0;">
+                <div style="padding: 1.5rem; background: var(--bg-gray); border-radius: 8px;">
+                    <strong style="color: var(--ibm-blue);">🎓 University Learning</strong>
+                    <p style="margin-top: 0.5rem;">Supporting self-directed learning for students transitioning into technical fields</p>
+                </div>
+                <div style="padding: 1.5rem; background: var(--bg-gray); border-radius: 8px;">
+                    <strong style="color: var(--ibm-blue);">🏢 Corporate Training</strong>
+                    <p style="margin-top: 0.5rem;">Helping new developers and analysts ramp up faster with structured AI assistance</p>
+                </div>
+                <div style="padding: 1.5rem; background: var(--bg-gray); border-radius: 8px;">
+                    <strong style="color: var(--ibm-blue);">💼 Consulting Engagements</strong>
+                    <p style="margin-top: 0.5rem;">Part of AI adoption strategies, workflow redesign, or productivity improvement initiatives</p>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <p style="font-size: 1.1rem;"><strong>Why This Matters for IBM Consulting:</strong></p>
+                <p style="margin-top: 1rem;">This project demonstrates exactly what IBM seeks in an Associate Business Consultant: the ability to identify real business challenges, apply structured methodologies, design practical solutions, and validate outcomes with data. It bridges technical understanding with business value—a core requirement for consulting roles.</p>
+            </div>
+        </section>
+
+        <footer style="text-align: center; padding: 2rem 0; color: var(--text-secondary);">
+            <p>Built with IBM Design Thinking principles | © 2024 Eugenie</p>
+            <p style="margin-top: 0.5rem; font-size: 0.9rem;">Designed for Associate Business Consultant Application at IBM Consulting</p>
+        </footer>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        document.addEventListener('DOMContentLoaded', function() {
+            lucide.createIcons();
+        });
+
+        // Smooth scroll to section
+        function scrollToSection(sectionId, event) {
+            const section = document.getElementById(sectionId);
+            const tabs = document.querySelectorAll('.nav-tab');
+            
+            // Update active tab
+            tabs.forEach(tab => tab.classList.remove('active'));
+            if (event && event.target) {
+                event.target.classList.add('active');
+            }
+            
+            // Smooth scroll
+            section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // Accordion toggle
+        function toggleAccordion(header) {
+            const accordion = header.parentElement;
+            const allAccordions = document.querySelectorAll('.accordion');
+            
+            // Close other accordions
+            allAccordions.forEach(acc => {
+                if (acc !== accordion) {
+                    acc.classList.remove('active');
+                }
+            });
+            
+            // Toggle current accordion
+            accordion.classList.toggle('active');
+            
+            // Re-initialize icons after DOM change
+            setTimeout(() => {
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons();
+                }
+            }, 50);
+        }
+
+        // Intersection Observer for scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all sections
+        document.querySelectorAll('.section').forEach(section => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(20px)';
+            section.style.transition = 'all 0.6s ease';
+            observer.observe(section);
+        });
+
+        // Update active nav tab on scroll
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('.section');
+            const navTabs = document.querySelectorAll('.nav-tab');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navTabs.forEach(tab => {
+                tab.classList.remove('active');
+                const sectionName = tab.textContent.toLowerCase()
+                    .replace('executive summary', 'summary')
+                    .replace('problem analysis', 'problem')
+                    .replace('sapf framework', 'framework')
+                    .replace('impact & results', 'impact')
+                    .replace('business value', 'conclusion');
+                
+                if (sectionName === current) {
+                    tab.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
